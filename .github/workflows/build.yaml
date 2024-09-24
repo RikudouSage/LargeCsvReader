@@ -31,9 +31,17 @@ jobs:
     needs:
       - package_linux
     runs-on: ubuntu-latest
-    env:
-      APP_VERSION: dev
     steps:
+      - name: Extract Version Name
+        id: extract_name
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            if (context.payload.ref.startsWith('refs/tags/')) {
+              return context.payload.ref.replace(/refs\/tags\/v/, '');
+            }
+            return 'dev';
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install rpm
@@ -47,11 +55,11 @@ jobs:
       - name: Move file
         run: mv LargeCsvReader.tar.xz rpm/SOURCES
       - name: Build RPM
-        run: rpmbuild -ba --define "_topdir $(pwd)/rpm" --define "app_version $APP_VERSION" rpm/LargeCsvReader.spec
+        run: rpmbuild -ba --define "_topdir $(pwd)/rpm" --define "app_version ${{ steps.extract_name.outputs.result }}" rpm/LargeCsvReader.spec
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: rpm/RPMS/x86_64/LargeCsvReader-${{ env.APP_VERSION }}-1.x86_64.rpm
+          path: rpm/RPMS/x86_64/LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm
           name: rpm
 
   build_win_installer:
@@ -60,12 +68,26 @@ jobs:
       - package_windows
     runs-on: windows-latest
     steps:
+      - name: Extract Version Name
+        id: extract_name
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            if (context.payload.ref.startsWith('refs/tags/')) {
+              return context.payload.ref.replace(/refs\/tags\/v/, '');
+            }
+            return 'dev';
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Download built
         uses: actions/download-artifact@v4
         with:
           name: windows-latest
+      - name: Set version
+        env:
+          VERSION: ${{ steps.extract_name.outputs.result }}
+        run: echo %VERSION% > appversion
       - name: Move file
         run: mv LargeCsvReader.exe windows
       - name: Create Windows setup
@@ -74,7 +96,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: windows/LargeCsvReaderSetup.exe
+          path: windows/Output/LargeCsvReaderSetup.exe
           name: win_installer
 
   create_release:
