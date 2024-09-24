@@ -29,3 +29,5 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         run: fyne package
+      - name: List files
+        run: ls -lah
