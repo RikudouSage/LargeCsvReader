@@ -89,6 +89,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 
 	separatorSelect := widget.NewSelect([]string{"Comma", "Semicolon", "Tab"}, func(selected string) {
 		csvFile = csv.NewReader(file)
+		csvFile.LazyQuotes = true
 		csvFile.Comma = typeToCharMap[selected]
 
 		_, err = file.Seek(0, 0)
