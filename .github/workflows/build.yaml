@@ -6,16 +6,17 @@ on:
       - master
 
 jobs:
-  package:
-    strategy:
-      matrix:
-        os:
-          - macos-latest
-          - windows-latest
-    name: Package (${{ matrix.os }})
+  package_macos:
+    name: Package (macos-latest)
     uses: ./.github/workflows/build-package.yaml
     with:
-      os: ${{ matrix.os }}
+      os: macos-latest
+
+  package_windows:
+    name: Package (windows-latest)
+    uses: ./.github/workflows/build-package.yaml
+    with:
+      os: windows-latest
 
   package_linux:
     name: Package (ubuntu-latest)
@@ -50,3 +51,25 @@ jobs:
         with:
           path: rpm/RPMS/x86_64/LargeCsvReader-${{ env.APP_VERSION }}-1.x86_64.rpm
           name: rpm
+  build_win_installer:
+    name: Build Windows installer
+    needs:
+      - package_windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Download built
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-latest
+      - name: Move file
+        run: mv LargeCsvReader.exe windows
+      - name: Create Windows setup
+        run: iscc setup.iss
+        working-directory: windows
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: windows/LargeCsvReaderSetup.exe
+          name: win_installer
