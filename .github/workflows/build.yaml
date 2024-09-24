@@ -103,6 +103,8 @@ jobs:
     name: Create a release
     runs-on: ubuntu-latest
     if: startsWith(github.event.ref, 'refs/tags/v')
+    permissions:
+      contents: write
     needs:
       - package_windows
       - package_linux
