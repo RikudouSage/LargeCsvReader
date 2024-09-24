@@ -37,3 +37,4 @@ jobs:
           path: |
             LargeCsvReader.app
             LargeCsvReader.tar.xz
+          name: ${{ matrix.os }}
