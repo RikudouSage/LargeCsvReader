@@ -37,3 +37,29 @@ jobs:
             LargeCsvReader.tar.xz
             LargeCsvReader.exe
           name: ${{ matrix.os }}
+  build_rpm:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install rpm
+        run: sudo apt-get -y install rpm
+      - name: Download built
+        uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest
+      - name: Create sources directory
+        run: mkdir -p spec/SOURCES
+      - name: Move file
+        run: mv LargeCsvReader.tar.xz spec/SOURCES
+      - name: Change directory
+        run: cd spec
+      - name: Build RPM
+        run: rpmbuild -ba --define "_topdir $(pwd)" LargeCsvReader.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: RPMS/x86_64/LargeCsvReader-dev-1.fc40.x86_64.rpm
+          name: rpm

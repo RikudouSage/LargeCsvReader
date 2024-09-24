@@ -1,2 +1,4 @@
 /fyne-cross
 /.idea
+/spec/*
+!/spec/LargeCsvReader.spec
