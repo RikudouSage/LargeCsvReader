@@ -2,11 +2,13 @@ package main
 
 import (
 	"LargeCsvReader/widgets"
+	"embed"
 	"encoding/csv"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/lang"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
@@ -14,14 +16,23 @@ import (
 	"os"
 )
 
+//go:embed translation
+var translations embed.FS
+
 func showPreviewWindow(filePath string, fyneApp fyne.App) {
-	window := fyneApp.NewWindow("Preview")
+	window := fyneApp.NewWindow(lang.X("app.preview", "Preview"))
 	window.Resize(fyne.NewSize(640, 480))
 
 	typeToCharMap := map[string]rune{
-		"Comma":     ',',
-		"Semicolon": ';',
-		"Tab":       '\t',
+		lang.X("app.separator.comma", "Comma"):         ',',
+		lang.X("app.separator.semicolon", "Semicolon"): ';',
+		lang.X("app.separator.tab", "Tab"):             '\t',
+	}
+	separatorOptions := make([]string, len(typeToCharMap))
+	i := 0
+	for key := range typeToCharMap {
+		separatorOptions[i] = key
+		i++
 	}
 
 	file, err := os.Open(filePath)
@@ -31,7 +42,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 	var csvFile *csv.Reader
 	rows := make([][]string, 5)
 
-	previewText := widget.NewLabel("Preview")
+	previewText := widget.NewLabel(lang.X("app.preview", "Preview"))
 	previewText.Hide()
 
 	tableContainer := container.NewStack()
@@ -54,7 +65,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 				cell.SetText(rows[id.Row][id.Col])
 				cell.OnRightClick = func(event *fyne.PointEvent) {
 					items := []*fyne.MenuItem{
-						fyne.NewMenuItem("Copy", func() {
+						fyne.NewMenuItem(lang.X("app.copy_to_clipboard", "Copy"), func() {
 							window.Clipboard().SetContent(cell.Text)
 						}),
 					}
@@ -69,7 +80,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 	}
 
 	var loadMoreButton *widget.Button
-	loadMoreButton = widget.NewButton("Load more", func() {
+	loadMoreButton = widget.NewButton(lang.X("app.load_more_button", "Load more"), func() {
 		for range 5 {
 			line, err := csvFile.Read()
 			if err == io.EOF {
@@ -87,7 +98,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 	})
 	loadMoreButton.Hide()
 
-	separatorSelect := widget.NewSelect([]string{"Comma", "Semicolon", "Tab"}, func(selected string) {
+	separatorSelect := widget.NewSelect(separatorOptions, func(selected string) {
 		csvFile = csv.NewReader(file)
 		csvFile.LazyQuotes = true
 		csvFile.Comma = typeToCharMap[selected]
@@ -125,7 +136,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 
 	mainContainer := container.NewBorder(
 		container.NewVBox(
-			widget.NewLabel("Separator"),
+			widget.NewLabel(lang.X("app.separator", "Separator")),
 			separatorSelect,
 			lineSeparator1,
 			container.NewHBox(
@@ -153,7 +164,12 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 
 func main() {
 	fyneApp := app.NewWithID("1af17320-d9ef-4d2b-aae1-8226b14a177a")
-	window := fyneApp.NewWindow("Large CSV Reader")
+	err := lang.AddTranslationsFS(translations, "translation")
+	if err != nil {
+		panic(err)
+	}
+
+	window := fyneApp.NewWindow(lang.X("app.title", "Large CSV Reader"))
 	window.Resize(fyne.NewSize(640, 480))
 	window.SetMaster()
 
@@ -166,11 +182,11 @@ func main() {
 
 	window.SetContent(container.NewVBox(
 		container.NewCenter(
-			widget.NewLabel("Using the button below choose a CSV you want to open"),
+			widget.NewLabel(lang.X("app.choose_csv_button.description", "Using the button below choose a CSV you want to open")),
 		),
 		container.New(
 			layout.NewCustomPaddedLayout(8, 0, 32, 32),
-			widget.NewButton("Open CSV", func() {
+			widget.NewButton(lang.X("app.choose_csv_button", "Open CSV"), func() {
 				openDialog.Show()
 			}),
 		),

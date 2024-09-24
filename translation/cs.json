@@ -1,0 +1,11 @@
+{
+  "app.preview": "Náhled",
+  "app.separator.comma": "Čárka",
+  "app.separator.semicolon": "Středník",
+  "app.separator.tab": "Tabulátor",
+  "app.copy_to_clipboard": "Zkopírovat",
+  "app.load_more_button": "Načíst více",
+  "app.separator": "Oddělovač",
+  "app.choose_csv_button.description": "Pomocí tlačítka níže zvolte CSV soubor, který chcete načíst",
+  "app.choose_csv_button": "Otevřít CSV"
+}
