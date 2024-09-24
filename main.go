@@ -153,7 +153,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 
 func main() {
 	fyneApp := app.NewWithID("1af17320-d9ef-4d2b-aae1-8226b14a177a")
-	window := fyneApp.NewWindow("Hello")
+	window := fyneApp.NewWindow("Large CSV Reader")
 	window.Resize(fyne.NewSize(640, 480))
 	window.SetMaster()
 
