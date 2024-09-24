@@ -13,7 +13,7 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-    name: Build (${{ matrix.os }})
+    name: Build app (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Go
@@ -38,6 +38,7 @@ jobs:
             LargeCsvReader.exe
           name: ${{ matrix.os }}
   build_rpm:
+    name: Build RPM
     needs:
       - build
     runs-on: ubuntu-latest
@@ -56,12 +57,10 @@ jobs:
         run: mkdir -p spec/SOURCES
       - name: Move file
         run: mv LargeCsvReader.tar.xz spec/SOURCES
-      - name: Change directory
-        run: cd spec
       - name: Build RPM
-        run: rpmbuild -ba --define "_topdir $(pwd)" --define "app_version $APP_VERSION" LargeCsvReader.spec
+        run: rpmbuild -ba --define "_topdir $(pwd)/spec" --define "app_version $APP_VERSION" spec/LargeCsvReader.spec
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: RPMS/x86_64/LargeCsvReader-$APP_VERSION-1.fc40.x86_64.rpm
+          path: spec/RPMS/x86_64/LargeCsvReader-$APP_VERSION-1.fc40.x86_64.rpm
           name: rpm
