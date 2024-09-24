@@ -2,6 +2,8 @@ name: Build project
 on:
   workflow_dispatch:
   push:
+    tags:
+      - v*
     branches:
       - master
 
@@ -51,6 +53,7 @@ jobs:
         with:
           path: rpm/RPMS/x86_64/LargeCsvReader-${{ env.APP_VERSION }}-1.x86_64.rpm
           name: rpm
+
   build_win_installer:
     name: Build Windows installer
     needs:
@@ -73,3 +76,45 @@ jobs:
         with:
           path: windows/LargeCsvReaderSetup.exe
           name: win_installer
+
+  create_release:
+    name: Create a release
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    needs:
+      - package_windows
+      - package_linux
+      - package_macos
+      - build_rpm
+      - build_win_installer
+    steps:
+      - name: Extract Version Name
+        id: extract_name
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            return context.payload.ref.replace(/refs\/tags\/v/, '');
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Compress MacOS version
+        run: 7z a -tzip {LargeCsvReader.zip} LargeCsvReader.app
+        working-directory: artifacts
+      - name: Create a Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release ${{ steps.extract_name.outputs.result }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          body: |
+            For Windows: Either the `LargeCsvReader.exe` (portable) or `LargeCsvReaderSetup.exe` (installer).
+            For Linux: `LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm` if your distribution supports RPM, otherwise `LargeCsvReader.tar.xz` (extract it somewhere and run `sudo make install`)
+            For MacOS: `LargeCsvReader.zip`, extract `LargeCsvReader.app` anywhere you want and open it.
+          files: artifacts/*
