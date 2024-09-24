@@ -47,7 +47,7 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 				return len(rows), len(rows[0])
 			},
 			func() fyne.CanvasObject {
-				return widgets.NewCellWidget("default text", nil) // placeholder to specify width
+				return widgets.NewCellWidget("default (hopefully) large enough text", nil) // placeholder to specify width
 			},
 			func(id widget.TableCellID, object fyne.CanvasObject) {
 				cell := object.(*widgets.CellWidget)
