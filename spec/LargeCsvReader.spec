@@ -1,5 +1,5 @@
 Name:           LargeCsvReader
-Version:        dev
+Version:        %{app_version}
 Release:        1%{?dist}
 Summary:        App for previewing large csv files
 
@@ -30,5 +30,5 @@ make install DESTDIR=%{buildroot}
 %{_datadir}/pixmaps/LargeCsvReader.png
 
 %changelog
-* Tue Sep 24 2024 RikudouSage <me@rikudousage.com> - dev-1
+* Tue Sep 24 2024 RikudouSage <me@rikudousage.com> - %{app_version}-1
 - Initial package
