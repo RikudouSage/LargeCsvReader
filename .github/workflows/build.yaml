@@ -1,0 +1,23 @@
+name: Build app
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install fyne
+        run: go install fyne.io/fyne/v2/cmd/fyne@latest
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build
+        run: fyne package
