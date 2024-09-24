@@ -1,4 +1,4 @@
-name: Build app
+name: Build project
 on:
   workflow_dispatch:
   push:
@@ -6,41 +6,28 @@ on:
       - master
 
 jobs:
-  build:
+  package:
     strategy:
       matrix:
         os:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-    name: Build app (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-      - name: Setup (ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
-      - name: Install fyne
-        run: go install fyne.io/fyne/v2/cmd/fyne@latest
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Build
-        run: fyne package --appID com.rikudousage.large_csv_reader
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          path: |
-            LargeCsvReader.app
-            LargeCsvReader.tar.xz
-            LargeCsvReader.exe
-          name: ${{ matrix.os }}
+    name: Package (${{ matrix.os }})
+    uses: ./.github/workflows/build-package.yaml
+    with:
+      os: ${{ matrix.os }}
+
+  package_linux:
+    name: Package (Linux)
+    uses: ./.github/workflows/build-package.yaml
+    with:
+      os: ubuntu-latest
+
   build_rpm:
     name: Build RPM
     needs:
-      - build
+      - package_linux
     runs-on: ubuntu-latest
     env:
       APP_VERSION: dev
