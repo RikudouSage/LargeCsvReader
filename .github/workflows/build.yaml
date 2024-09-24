@@ -41,6 +41,8 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
+    env:
+      APP_VERSION: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,9 +59,9 @@ jobs:
       - name: Change directory
         run: cd spec
       - name: Build RPM
-        run: rpmbuild -ba --define "_topdir $(pwd)" LargeCsvReader.spec
+        run: rpmbuild -ba --define "_topdir $(pwd)" --define "app_version $APP_VERSION" LargeCsvReader.spec
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: RPMS/x86_64/LargeCsvReader-dev-1.fc40.x86_64.rpm
+          path: RPMS/x86_64/LargeCsvReader-$APP_VERSION-1.fc40.x86_64.rpm
           name: rpm
