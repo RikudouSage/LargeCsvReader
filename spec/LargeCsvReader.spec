@@ -8,7 +8,6 @@ URL:            https://github.com/RikudouSage/LargeCsvReader
 Source0:        %{name}.tar.xz
 
 BuildArch:      x86_64
-BuildRequires:  make
 
 %description
 App for previewing large csv files
