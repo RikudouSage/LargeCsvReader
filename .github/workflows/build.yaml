@@ -29,12 +29,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         run: fyne package --appID com.rikudousage.large_csv_reader
-      - name: List files
-        run: ls
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           path: |
             LargeCsvReader.app
             LargeCsvReader.tar.xz
+            LargeCsvReader.exe
           name: ${{ matrix.os }}
