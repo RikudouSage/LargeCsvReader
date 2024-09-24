@@ -48,5 +48,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: spec/RPMS/x86_64/LargeCsvReader-$APP_VERSION-1.fc40.x86_64.rpm
+          path: spec/RPMS/x86_64/LargeCsvReader-$APP_VERSION-1.x86_64.rpm
           name: rpm
