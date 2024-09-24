@@ -28,7 +28,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build
-        run: fyne release --appID com.rikudousage.large_csv_reader
+        run: fyne package --appID com.rikudousage.large_csv_reader
       - name: List files
         run: ls
       - name: Upload artifact
