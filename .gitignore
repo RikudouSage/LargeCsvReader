@@ -1,4 +1,4 @@
 /fyne-cross
 /.idea
-/spec/*
-!/spec/LargeCsvReader.spec
+/rpm/*
+!/rpm/LargeCsvReader.spec

@@ -40,13 +40,13 @@ jobs:
         with:
           name: ubuntu-latest
       - name: Create sources directory
-        run: mkdir -p spec/SOURCES
+        run: mkdir -p rpm/SOURCES
       - name: Move file
-        run: mv LargeCsvReader.tar.xz spec/SOURCES
+        run: mv LargeCsvReader.tar.xz rpm/SOURCES
       - name: Build RPM
-        run: rpmbuild -ba --define "_topdir $(pwd)/spec" --define "app_version $APP_VERSION" spec/LargeCsvReader.spec
+        run: rpmbuild -ba --define "_topdir $(pwd)/rpm" --define "app_version $APP_VERSION" rpm/LargeCsvReader.spec
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: spec/RPMS/x86_64/LargeCsvReader-${{ env.APP_VERSION }}-1.x86_64.rpm
+          path: rpm/RPMS/x86_64/LargeCsvReader-${{ env.APP_VERSION }}-1.x86_64.rpm
           name: rpm
