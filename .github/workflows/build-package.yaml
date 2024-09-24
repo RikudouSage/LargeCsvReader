@@ -16,7 +16,7 @@ jobs:
         with:
           go-version: '1.22'
       - name: Setup (ubuntu)
-        if: matrix.os == 'ubuntu-latest'
+        if: inputs.os == 'ubuntu-latest'
         run: sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
       - name: Install fyne
         run: go install fyne.io/fyne/v2/cmd/fyne@latest
@@ -31,4 +31,4 @@ jobs:
             LargeCsvReader.app
             LargeCsvReader.tar.xz
             LargeCsvReader.exe
-          name: ${{ matrix.os }}
+          name: ${{ inputs.os }}
