@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
           - macos-latest
           - windows-latest
     name: Package (${{ matrix.os }})
