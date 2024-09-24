@@ -18,7 +18,7 @@ jobs:
       os: ${{ matrix.os }}
 
   package_linux:
-    name: Package (Linux)
+    name: Package (ubuntu-latest)
     uses: ./.github/workflows/build-package.yaml
     with:
       os: ubuntu-latest

@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
-      - name: Setup (ubuntu)
+      - name: Setup (${{ inputs.os }})
         if: inputs.os == 'ubuntu-latest'
         run: sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
       - name: Install fyne
