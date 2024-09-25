@@ -11,6 +11,8 @@ jobs:
     name: Build package (${{ inputs.os }})
     runs-on: ${{ inputs.os }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Extract Version Name
         id: extract_name
         uses: actions/github-script@v7
@@ -32,8 +34,6 @@ jobs:
         run: sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
       - name: Install fyne
         run: go install fyne.io/fyne/v2/cmd/fyne@latest
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Build
         run: fyne package --appID com.rikudousage.large_csv_reader
       - name: Upload artifact
