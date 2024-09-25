@@ -98,14 +98,14 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 		lang.X("app.separator.tab", "Tab"):             '\t',
 	}
 	separatorOptions := make([]string, len(typeToCharMap))
-	sort.Slice(separatorOptions, func(i, j int) bool {
-		return separatorOptions[i] < separatorOptions[j]
-	})
 	i := 0
 	for key := range typeToCharMap {
 		separatorOptions[i] = key
 		i++
 	}
+	sort.Slice(separatorOptions, func(i, j int) bool {
+		return separatorOptions[i] < separatorOptions[j]
+	})
 
 	file, err := os.Open(filePath)
 	if err != nil {
