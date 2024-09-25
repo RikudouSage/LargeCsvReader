@@ -85,7 +85,7 @@ jobs:
       - name: Set version
         env:
           VERSION: ${{ steps.extract_name.outputs.result }}
-        run: echo %VERSION% > appversion
+        run: echo %VERSION% > assets\appversion
       - name: Move file
         run: mv LargeCsvReader.exe windows
       - name: Create Windows setup

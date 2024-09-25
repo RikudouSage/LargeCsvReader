@@ -14,10 +14,14 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"io"
 	"os"
+	"strings"
 )
 
 //go:embed translation
 var translations embed.FS
+
+//go:embed assets/appversion
+var version string
 
 func showPreviewWindow(filePath string, fyneApp fyne.App) {
 	window := fyneApp.NewWindow(lang.X("app.preview", "Preview"))
@@ -169,7 +173,7 @@ func main() {
 		panic(err)
 	}
 
-	window := fyneApp.NewWindow(lang.X("app.title", "Large CSV Reader"))
+	window := fyneApp.NewWindow(lang.X("app.title", "Large CSV Reader") + " (" + strings.TrimSpace(version) + ")")
 	window.Resize(fyne.NewSize(640, 480))
 	window.SetMaster()
 
