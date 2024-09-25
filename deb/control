@@ -1,0 +1,7 @@
+Package: LargeCsvReader
+Architecture: amd64
+Section: utils
+Priority: optional
+Description: App for previewing large csv files
+Maintainer: RikudouSage <me@rikudousage.com>
+Version: {{VERSION}}

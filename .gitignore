@@ -4,3 +4,5 @@
 !/rpm/LargeCsvReader.spec
 /windows/*
 !/windows/setup.iss
+/deb/*
+!/deb/control
