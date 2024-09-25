@@ -179,7 +179,13 @@ jobs:
           generate_release_notes: true
           fail_on_unmatched_files: true
           body: |
-            For Windows: Either the `LargeCsvReader.exe` (portable) or `LargeCsvReaderSetup.exe` (installer).
-            For Linux: `LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm` if your distribution supports RPM, `LargeCsvReader_${{ steps.extract_name.outputs.result }}_amd64.deb` if your distribution supports DEB, otherwise `LargeCsvReader.tar.xz` (extract it somewhere and run `sudo make install`)
-            For MacOS: `LargeCsvReader.zip`, extract `LargeCsvReader.app` anywhere you want and open it.
+            For Windows: 
+              - `LargeCsvReader.exe` (portable)
+              - `LargeCsvReaderSetup.exe` (installer)
+            For Linux: 
+              - `LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm` if your distribution supports RPM
+              - `LargeCsvReader_${{ steps.extract_name.outputs.result }}_amd64.deb` if your distribution supports DEB
+              - `LargeCsvReader.tar.xz` for all systems (extract it somewhere and run `sudo make install`)
+            For MacOS:
+              - `LargeCsvReader.zip`, extract `LargeCsvReader.app` anywhere you want and open it.
           files: artifacts/*
