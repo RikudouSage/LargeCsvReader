@@ -60,6 +60,47 @@ jobs:
           path: rpm/RPMS/x86_64/LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm
           name: rpm
 
+  build_deb:
+    name: Build DEB
+    needs:
+      - package_linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Version Name
+        id: extract_name
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            if (context.payload.ref.startsWith('refs/tags/')) {
+              return context.payload.ref.replace(/refs\/tags\/v/, '');
+            }
+            return '0.dev';
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Download built
+        uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest
+      - name: Build deb package
+        env:
+          VERSION: ${{ steps.extract_name.outputs.result }}
+        run: |
+          mkdir -p deb/LargeCsvReader-$VERSION/DEBIAN
+          mkdir deb/source
+          tar xf LargeCsvReader.tar.xz -C deb/source
+          cd deb/source
+          PREFIX=$(pwd)/../LargeCsvReader-$VERSION make install
+          cd ..
+          cp control LargeCsvReader-$VERSION/DEBIAN
+          sed -i "s/{{VERSION}}/$VERSION/" LargeCsvReader-$VERSION/DEBIAN/control
+          dpkg-deb --build LargeCsvReader-$VERSION LargeCsvReader_${VERSION}_amd64.deb
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: deb/LargeCsvReader_${{ steps.extract_name.outputs.result }}_amd64.deb
+          name: deb
+
   build_win_installer:
     name: Build Windows installer
     needs:
