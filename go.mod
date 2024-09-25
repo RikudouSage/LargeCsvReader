@@ -2,7 +2,10 @@ module LargeCsvReader
 
 go 1.22
 
-require fyne.io/fyne/v2 v2.5.1
+require (
+	fyne.io/fyne/v2 v2.5.1
+	github.com/hashicorp/go-version v1.7.0
+)
 
 require (
 	fyne.io/systray v1.11.0 // indirect

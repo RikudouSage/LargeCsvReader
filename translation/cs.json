@@ -7,5 +7,7 @@
   "app.load_more_button": "Načíst více",
   "app.separator": "Oddělovač",
   "app.choose_csv_button.description": "Pomocí tlačítka níže zvolte CSV soubor, který chcete načíst",
-  "app.choose_csv_button": "Otevřít CSV"
+  "app.choose_csv_button": "Otevřít CSV",
+  "app.new_version.title": "Nalezena nová verze!",
+  "app.new_version.description": "Chcete novější verzi stáhnout?"
 }

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"LargeCsvReader/browser"
 	"LargeCsvReader/widgets"
 	"embed"
 	"encoding/csv"
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -12,16 +14,78 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
+	"github.com/hashicorp/go-version"
 	"io"
+	"net/http"
 	"os"
+	"regexp"
 	"strings"
 )
+
+const repository = "https://github.com/RikudouSage/LargeCsvReader"
 
 //go:embed translation
 var translations embed.FS
 
 //go:embed assets/appversion
-var version string
+var appVersion string
+
+func checkForNewVersion(window fyne.Window) {
+	currentVersion, err := version.NewVersion(strings.TrimSpace(appVersion))
+	if err != nil || currentVersion.String() == "dev" {
+		fmt.Println(err)
+		return
+	}
+
+	const url = repository + "/releases/latest"
+	httpClient := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	response, err := httpClient.Get(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	response.Body.Close()
+
+	redirectUrl := response.Header.Get("Location")
+	if redirectUrl == "" {
+		return
+	}
+
+	regex := regexp.MustCompile("https://.*/v([0-9.]+)")
+	matches := regex.FindStringSubmatch(redirectUrl)
+	if len(matches) < 2 {
+		return
+	}
+
+	newestVersion, err := version.NewVersion(matches[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if newestVersion.GreaterThan(currentVersion) {
+		dialog.ShowConfirm(
+			lang.X("app.new_version.title", "New version found!"),
+			lang.X("app.new_version.description", "Do you want to download the newest version?"),
+			func(result bool) {
+				if !result {
+					return
+				}
+
+				err = browser.OpenUrl(redirectUrl)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+			},
+			window,
+		)
+	}
+}
 
 func showPreviewWindow(filePath string, fyneApp fyne.App) {
 	window := fyneApp.NewWindow(lang.X("app.preview", "Preview"))
@@ -173,7 +237,7 @@ func main() {
 		panic(err)
 	}
 
-	window := fyneApp.NewWindow(lang.X("app.title", "Large CSV Reader") + " (" + strings.TrimSpace(version) + ")")
+	window := fyneApp.NewWindow(lang.X("app.title", "Large CSV Reader") + " (" + strings.TrimSpace(appVersion) + ")")
 	window.Resize(fyne.NewSize(640, 480))
 	window.SetMaster()
 
@@ -195,6 +259,8 @@ func main() {
 			}),
 		),
 	))
+
+	go checkForNewVersion(window)
 
 	window.Show()
 	fyneApp.Run()
