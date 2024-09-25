@@ -149,6 +149,7 @@ jobs:
       - package_linux
       - package_macos
       - build_rpm
+      - build_deb
       - build_win_installer
     steps:
       - name: Extract Version Name
@@ -179,6 +180,6 @@ jobs:
           fail_on_unmatched_files: true
           body: |
             For Windows: Either the `LargeCsvReader.exe` (portable) or `LargeCsvReaderSetup.exe` (installer).
-            For Linux: `LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm` if your distribution supports RPM, otherwise `LargeCsvReader.tar.xz` (extract it somewhere and run `sudo make install`)
+            For Linux: `LargeCsvReader-${{ steps.extract_name.outputs.result }}-1.x86_64.rpm` if your distribution supports RPM, `LargeCsvReader_${{ steps.extract_name.outputs.result }}_amd64.deb` if your distribution supports DEB, otherwise `LargeCsvReader.tar.xz` (extract it somewhere and run `sudo make install`)
             For MacOS: `LargeCsvReader.zip`, extract `LargeCsvReader.app` anywhere you want and open it.
           files: artifacts/*
