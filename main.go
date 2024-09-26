@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/go-version"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"regexp"
 	"sort"
@@ -252,6 +253,11 @@ func main() {
 	}, window)
 	openDialog.SetFilter(storage.NewExtensionFileFilter([]string{".csv"}))
 
+	repoUrl, err := url.Parse(repository)
+	if err != nil {
+		panic(err)
+	}
+
 	window.SetContent(container.NewVBox(
 		container.NewCenter(
 			widget.NewLabel(lang.X("app.choose_csv_button.description", "Using the button below choose a CSV you want to open")),
@@ -261,6 +267,10 @@ func main() {
 			widget.NewButton(lang.X("app.choose_csv_button", "Open CSV"), func() {
 				openDialog.Show()
 			}),
+		),
+		layout.NewSpacer(),
+		container.NewCenter(
+			widget.NewHyperlink(repository, repoUrl),
 		),
 	))
 
