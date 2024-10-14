@@ -146,6 +146,11 @@ func showPreviewWindow(filePath string, fyneApp fyne.App) {
 					canvas := fyne.CurrentApp().Driver().CanvasForObject(cell)
 					widget.ShowPopUpMenuAtPosition(menu, canvas, event.AbsolutePosition)
 				}
+				if id.Row == 0 {
+					cell.Importance = widget.HighImportance
+				} else {
+					cell.Importance = widget.MediumImportance
+				}
 			},
 		)
 
